@@ -5,7 +5,6 @@ namespace Common.Log.LogProviders
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.Linq.Expressions;
-    using System.Reflection;
     using Common.Log.LogProviders.Loggers;
 
     [ExcludeFromCodeCoverage]
@@ -69,13 +68,13 @@ namespace Common.Log.LogProviders
             var messageParameter = Expression.Parameter(typeof(string), "message");
             var severityParameter = Expression.Parameter(typeof(int), "severity");
 
-            MemberInitExpression memberInit = GetWriteLogExpression(
+            var memberInit = GetWriteLogExpression(
                 messageParameter,
                 Expression.Convert(severityParameter, _traceEventTypeType),
                 logNameParameter);
 
             //Logger.Write(new LogEntry(....));
-            MethodInfo writeLogEntryMethod = _loggerType.GetMethodPortable("Write", _logEntryType);
+            var writeLogEntryMethod = _loggerType.GetMethodPortable("Write", _logEntryType);
             var writeLogEntryExpression = Expression.Call(writeLogEntryMethod, memberInit);
 
             return Expression.Lambda<Action<string, string, int>>(
@@ -91,36 +90,38 @@ namespace Common.Log.LogProviders
             var logNameParameter = Expression.Parameter(typeof(string), "logName");
             var severityParameter = Expression.Parameter(typeof(int), "severity");
 
-            MemberInitExpression memberInit = GetWriteLogExpression(
+            var memberInit = GetWriteLogExpression(
                 Expression.Constant("***dummy***"),
                 Expression.Convert(severityParameter, _traceEventTypeType),
                 logNameParameter);
 
             //Logger.Write(new LogEntry(....));
-            MethodInfo writeLogEntryMethod = _loggerType.GetMethodPortable("ShouldLog", _logEntryType);
+            var writeLogEntryMethod = _loggerType.GetMethodPortable("ShouldLog", _logEntryType);
             var writeLogEntryExpression = Expression.Call(writeLogEntryMethod, memberInit);
 
-            return Expression.Lambda<Func<string, int, bool>>(
-                writeLogEntryExpression,
-                logNameParameter,
-                severityParameter).Compile();
+            return Expression
+                .Lambda<Func<string, int, bool>>(
+                    writeLogEntryExpression,
+                    logNameParameter,
+                    severityParameter)
+                .Compile();
         }
 
         private static MemberInitExpression GetWriteLogExpression(Expression message,
             Expression severityParameter, ParameterExpression logNameParameter)
         {
             var entryType = _logEntryType;
-            MemberInitExpression memberInit = Expression.MemberInit(Expression.New(entryType),
+            var memberInit = Expression.MemberInit(Expression.New(entryType),
                 Expression.Bind(entryType.GetPropertyPortable("Message"), message),
                 Expression.Bind(entryType.GetPropertyPortable("Severity"), severityParameter),
                 Expression.Bind(
                     entryType.GetPropertyPortable("TimeStamp"),
-                    Expression.Property(null, typeof (DateTime).GetPropertyPortable("UtcNow"))),
+                    Expression.Property(null, typeof(DateTime).GetPropertyPortable("UtcNow"))),
                 Expression.Bind(
                     entryType.GetPropertyPortable("Categories"),
                     Expression.ListInit(
-                        Expression.New(typeof (List<string>)),
-                        typeof (List<string>).GetMethodPortable("Add", typeof (string)),
+                        Expression.New(typeof(List<string>)),
+                        typeof(List<string>).GetMethodPortable("Add", typeof(string)),
                         logNameParameter)));
             return memberInit;
         }

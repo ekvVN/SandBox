@@ -44,41 +44,45 @@ namespace Common.Log.LogProviders.Loggers
             {
                 throw new InvalidOperationException("Type Serilog.ILogger was not found.");
             }
-            MethodInfo isEnabledMethodInfo = loggerType.GetMethodPortable("IsEnabled", logEventLevelType);
-            ParameterExpression instanceParam = Expression.Parameter(typeof(object));
-            UnaryExpression instanceCast = Expression.Convert(instanceParam, loggerType);
-            ParameterExpression levelParam = Expression.Parameter(typeof(object));
-            UnaryExpression levelCast = Expression.Convert(levelParam, logEventLevelType);
-            MethodCallExpression isEnabledMethodCall = Expression.Call(instanceCast, isEnabledMethodInfo, levelCast);
-            _isEnabled = Expression.Lambda<Func<object, object, bool>>(isEnabledMethodCall, instanceParam, levelParam).Compile();
+            var isEnabledMethodInfo = loggerType.GetMethodPortable("IsEnabled", logEventLevelType);
+            var instanceParam = Expression.Parameter(typeof(object));
+            var instanceCast = Expression.Convert(instanceParam, loggerType);
+            var levelParam = Expression.Parameter(typeof(object));
+            var levelCast = Expression.Convert(levelParam, logEventLevelType);
+            var isEnabledMethodCall = Expression.Call(instanceCast, isEnabledMethodInfo, levelCast);
+            _isEnabled = Expression
+                .Lambda<Func<object, object, bool>>(isEnabledMethodCall, instanceParam, levelParam)
+                .Compile();
 
             // Action<object, object, string> Write =
             // (logger, level, message, params) => { ((SeriLog.ILoggerILogger)logger).Write(level, message, params); }
-            MethodInfo writeMethodInfo = loggerType.GetMethodPortable("Write", logEventLevelType, typeof(string), typeof(object[]));
-            ParameterExpression messageParam = Expression.Parameter(typeof(string));
-            ParameterExpression propertyValuesParam = Expression.Parameter(typeof(object[]));
-            MethodCallExpression writeMethodExp = Expression.Call(
+            var writeMethodInfo = loggerType.GetMethodPortable("Write", logEventLevelType, typeof(string), typeof(object[]));
+            var messageParam = Expression.Parameter(typeof(string));
+            var propertyValuesParam = Expression.Parameter(typeof(object[]));
+            var writeMethodExp = Expression.Call(
                 instanceCast,
                 writeMethodInfo,
                 levelCast,
                 messageParam,
                 propertyValuesParam);
-            var expression = Expression.Lambda<Action<object, object, string, object[]>>(
-                writeMethodExp,
-                instanceParam,
-                levelParam,
-                messageParam,
-                propertyValuesParam);
-            _write = expression.Compile();
+
+            _write = Expression
+                .Lambda<Action<object, object, string, object[]>>(
+                    writeMethodExp,
+                    instanceParam,
+                    levelParam,
+                    messageParam,
+                    propertyValuesParam)
+                .Compile();
 
             // Action<object, object, string, Exception> WriteException =
             // (logger, level, exception, message) => { ((ILogger)logger).Write(level, exception, message, new object[]); }
-            MethodInfo writeExceptionMethodInfo = loggerType.GetMethodPortable("Write",
+            var writeExceptionMethodInfo = loggerType.GetMethodPortable("Write",
                 logEventLevelType,
                 typeof(Exception),
                 typeof(string),
                 typeof(object[]));
-            ParameterExpression exceptionParam = Expression.Parameter(typeof(Exception));
+            var exceptionParam = Expression.Parameter(typeof(Exception));
             writeMethodExp = Expression.Call(
                 instanceCast,
                 writeExceptionMethodInfo,
@@ -86,13 +90,15 @@ namespace Common.Log.LogProviders.Loggers
                 exceptionParam,
                 messageParam,
                 propertyValuesParam);
-            _writeException = Expression.Lambda<Action<object, object, Exception, string, object[]>>(
-                writeMethodExp,
-                instanceParam,
-                levelParam,
-                exceptionParam,
-                messageParam,
-                propertyValuesParam).Compile();
+            _writeException = Expression
+                .Lambda<Action<object, object, Exception, string, object[]>>(
+                    writeMethodExp,
+                    instanceParam,
+                    levelParam,
+                    exceptionParam,
+                    messageParam,
+                    propertyValuesParam)
+                .Compile();
         }
 
         public SerilogLogger(object logger)

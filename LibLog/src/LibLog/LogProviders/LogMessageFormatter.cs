@@ -32,7 +32,7 @@ namespace Common.Log.LogProviders
 
             return () =>
             {
-                string targetMessage = messageBuilder();
+                var targetMessage = messageBuilder();
                 IEnumerable<string> patternMatches;
                 return FormatStructuredMessage(targetMessage, formatParameters, out patternMatches);
             };
@@ -56,7 +56,7 @@ namespace Common.Log.LogProviders
                 return targetMessage;
             }
 
-            List<string> processedArguments = new List<string>();
+            var processedArguments = new List<string>();
             patternMatches = processedArguments;
 
             foreach (Match match in _pattern.Matches(targetMessage))

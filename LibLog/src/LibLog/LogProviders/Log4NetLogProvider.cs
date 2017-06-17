@@ -40,57 +40,55 @@ namespace Common.Log.LogProviders
 
         protected override OpenNdc GetOpenNdcMethod()
         {
-            Type logicalThreadContextType = Type.GetType("log4net.LogicalThreadContext, log4net");
-            PropertyInfo stacksProperty = logicalThreadContextType.GetPropertyPortable("Stacks");
-            Type logicalThreadContextStacksType = stacksProperty.PropertyType;
-            PropertyInfo stacksIndexerProperty = logicalThreadContextStacksType.GetPropertyPortable("Item");
-            Type stackType = stacksIndexerProperty.PropertyType;
-            MethodInfo pushMethod = stackType.GetMethodPortable("Push");
+            var logicalThreadContextType = Type.GetType("log4net.LogicalThreadContext, log4net");
+            var stacksProperty = logicalThreadContextType.GetPropertyPortable("Stacks");
+            var logicalThreadContextStacksType = stacksProperty.PropertyType;
+            var stacksIndexerProperty = logicalThreadContextStacksType.GetPropertyPortable("Item");
+            var stackType = stacksIndexerProperty.PropertyType;
+            var pushMethod = stackType.GetMethodPortable("Push");
 
-            ParameterExpression messageParameter =
-                Expression.Parameter(typeof(string), "message");
+            var messageParameter = Expression.Parameter(typeof(string), "message");
 
             // message => LogicalThreadContext.Stacks.Item["NDC"].Push(message);
-            MethodCallExpression callPushBody =
-                Expression.Call(
-                    Expression.Property(Expression.Property(null, stacksProperty),
-                        stacksIndexerProperty,
-                        Expression.Constant("NDC")),
-                    pushMethod,
-                    messageParameter);
+            var callPushBody = Expression.Call(
+                Expression.Property(Expression.Property(null, stacksProperty),
+                    stacksIndexerProperty,
+                    Expression.Constant("NDC")),
+                pushMethod,
+                messageParameter);
 
-            OpenNdc result =
-                Expression.Lambda<OpenNdc>(callPushBody, messageParameter)
-                    .Compile();
+            var result = Expression
+                .Lambda<OpenNdc>(callPushBody, messageParameter)
+                .Compile();
 
             return result;
         }
 
         protected override OpenMdc GetOpenMdcMethod()
         {
-            Type logicalThreadContextType = Type.GetType("log4net.LogicalThreadContext, log4net");
-            PropertyInfo propertiesProperty = logicalThreadContextType.GetPropertyPortable("Properties");
-            Type logicalThreadContextPropertiesType = propertiesProperty.PropertyType;
-            PropertyInfo propertiesIndexerProperty = logicalThreadContextPropertiesType.GetPropertyPortable("Item");
+            var logicalThreadContextType = Type.GetType("log4net.LogicalThreadContext, log4net");
+            var propertiesProperty = logicalThreadContextType.GetPropertyPortable("Properties");
+            var logicalThreadContextPropertiesType = propertiesProperty.PropertyType;
+            var propertiesIndexerProperty = logicalThreadContextPropertiesType.GetPropertyPortable("Item");
 
-            MethodInfo removeMethod = logicalThreadContextPropertiesType.GetMethodPortable("Remove");
+            var removeMethod = logicalThreadContextPropertiesType.GetMethodPortable("Remove");
 
-            ParameterExpression keyParam = Expression.Parameter(typeof(string), "key");
-            ParameterExpression valueParam = Expression.Parameter(typeof(string), "value");
+            var keyParam = Expression.Parameter(typeof(string), "key");
+            var valueParam = Expression.Parameter(typeof(string), "value");
 
-            MemberExpression propertiesExpression = Expression.Property(null, propertiesProperty);
+            var propertiesExpression = Expression.Property(null, propertiesProperty);
 
             // (key, value) => LogicalThreadContext.Properties.Item[key] = value;
-            BinaryExpression setProperties = Expression.Assign(Expression.Property(propertiesExpression, propertiesIndexerProperty, keyParam), valueParam);
+            var setProperties = Expression.Assign(Expression.Property(propertiesExpression, propertiesIndexerProperty, keyParam), valueParam);
 
             // key => LogicalThreadContext.Properties.Remove(key);
-            MethodCallExpression removeMethodCall = Expression.Call(propertiesExpression, removeMethod, keyParam);
+            var removeMethodCall = Expression.Call(propertiesExpression, removeMethod, keyParam);
 
-            Action<string, string> set = Expression
+            var set = Expression
                 .Lambda<Action<string, string>>(setProperties, keyParam, valueParam)
                 .Compile();
 
-            Action<string> remove = Expression
+            var remove = Expression
                 .Lambda<Action<string>>(removeMethodCall, keyParam)
                 .Compile();
 
@@ -108,11 +106,13 @@ namespace Common.Log.LogProviders
 
         private static Func<string, object> GetGetLoggerMethodCall()
         {
-            Type logManagerType = GetLogManagerType();
-            MethodInfo method = logManagerType.GetMethodPortable("GetLogger", typeof(string));
-            ParameterExpression nameParam = Expression.Parameter(typeof(string), "name");
-            MethodCallExpression methodCall = Expression.Call(null, method, nameParam);
-            return Expression.Lambda<Func<string, object>>(methodCall, nameParam).Compile();
+            var logManagerType = GetLogManagerType();
+            var method = logManagerType.GetMethodPortable("GetLogger", typeof(string));
+            var nameParam = Expression.Parameter(typeof(string), "name");
+            var methodCall = Expression.Call(null, method, nameParam);
+            return Expression
+                .Lambda<Func<string, object>>(methodCall, nameParam)
+                .Compile();
         }
     }
 }

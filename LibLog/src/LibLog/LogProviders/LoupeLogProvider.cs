@@ -2,7 +2,6 @@ namespace Common.Log.LogProviders
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
-    using System.Reflection;
     using Common.Log.LogProviders.Loggers;
 
     [ExcludeFromCodeCoverage]
@@ -50,16 +49,16 @@ namespace Common.Log.LogProviders
 
         private static WriteDelegate GetLogWriteDelegate()
         {
-            Type logManagerType = GetLogManagerType();
-            Type logMessageSeverityType = Type.GetType("Gibraltar.Agent.LogMessageSeverity, Gibraltar.Agent");
-            Type logWriteModeType = Type.GetType("Gibraltar.Agent.LogWriteMode, Gibraltar.Agent");
+            var logManagerType = GetLogManagerType();
+            var logMessageSeverityType = Type.GetType("Gibraltar.Agent.LogMessageSeverity, Gibraltar.Agent");
+            var logWriteModeType = Type.GetType("Gibraltar.Agent.LogWriteMode, Gibraltar.Agent");
 
-            MethodInfo method = logManagerType.GetMethodPortable(
+            var method = logManagerType.GetMethodPortable(
                 "Write",
-                logMessageSeverityType, typeof(string), typeof(int), typeof(Exception), typeof(bool), 
+                logMessageSeverityType, typeof(string), typeof(int), typeof(Exception), typeof(bool),
                 logWriteModeType, typeof(string), typeof(string), typeof(string), typeof(string), typeof(object[]));
 
-            var callDelegate = (WriteDelegate)method.CreateDelegate(typeof(WriteDelegate));
+            var callDelegate = (WriteDelegate) method.CreateDelegate(typeof(WriteDelegate));
             return callDelegate;
         }
     }

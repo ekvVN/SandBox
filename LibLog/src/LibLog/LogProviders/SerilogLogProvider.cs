@@ -50,19 +50,19 @@ namespace Common.Log.LogProviders
 
         private static Func<string, string, IDisposable> GetPushProperty()
         {
-            Type ndcContextType = Type.GetType("Serilog.Context.LogContext, Serilog") ?? 
-                                  Type.GetType("Serilog.Context.LogContext, Serilog.FullNetFx");
+            var ndcContextType = Type.GetType("Serilog.Context.LogContext, Serilog") ??
+                                 Type.GetType("Serilog.Context.LogContext, Serilog.FullNetFx");
 
-            MethodInfo pushPropertyMethod = ndcContextType.GetMethodPortable(
-                "PushProperty", 
+            var pushPropertyMethod = ndcContextType.GetMethodPortable(
+                "PushProperty",
                 typeof(string),
                 typeof(object),
                 typeof(bool));
 
-            ParameterExpression nameParam = Expression.Parameter(typeof(string), "name");
-            ParameterExpression valueParam = Expression.Parameter(typeof(object), "value");
-            ParameterExpression destructureObjectParam = Expression.Parameter(typeof(bool), "destructureObjects");
-            MethodCallExpression pushPropertyMethodCall = Expression
+            var nameParam = Expression.Parameter(typeof(string), "name");
+            var valueParam = Expression.Parameter(typeof(object), "value");
+            var destructureObjectParam = Expression.Parameter(typeof(bool), "destructureObjects");
+            var pushPropertyMethodCall = Expression
                 .Call(null, pushPropertyMethod, nameParam, valueParam, destructureObjectParam);
             var pushProperty = Expression
                 .Lambda<Func<string, object, bool, IDisposable>>(
@@ -71,7 +71,7 @@ namespace Common.Log.LogProviders
                     valueParam,
                     destructureObjectParam)
                 .Compile();
-            
+
             return (key, value) => pushProperty(key, value, false);
         }
 
@@ -82,22 +82,23 @@ namespace Common.Log.LogProviders
 
         private static Func<string, object> GetForContextMethodCall()
         {
-            Type logManagerType = GetLogManagerType();
-            MethodInfo method = logManagerType.GetMethodPortable("ForContext", typeof(string), typeof(object), typeof(bool));
-            ParameterExpression propertyNameParam = Expression.Parameter(typeof(string), "propertyName");
-            ParameterExpression valueParam = Expression.Parameter(typeof(object), "value");
-            ParameterExpression destructureObjectsParam = Expression.Parameter(typeof(bool), "destructureObjects");
-            MethodCallExpression methodCall = Expression.Call(null, method, new Expression[]
+            var logManagerType = GetLogManagerType();
+            var method = logManagerType.GetMethodPortable("ForContext", typeof(string), typeof(object), typeof(bool));
+            var propertyNameParam = Expression.Parameter(typeof(string), "propertyName");
+            var valueParam = Expression.Parameter(typeof(object), "value");
+            var destructureObjectsParam = Expression.Parameter(typeof(bool), "destructureObjects");
+            var methodCall = Expression.Call(null, method, new Expression[]
             {
-                propertyNameParam, 
+                propertyNameParam,
                 valueParam,
                 destructureObjectsParam
             });
-            var func = Expression.Lambda<Func<string, object, bool, object>>(
-                methodCall,
-                propertyNameParam,
-                valueParam,
-                destructureObjectsParam)
+            var func = Expression
+                .Lambda<Func<string, object, bool, object>>(
+                    methodCall,
+                    propertyNameParam,
+                    valueParam,
+                    destructureObjectsParam)
                 .Compile();
             return name => func("SourceContext", name, false);
         }
