@@ -13,7 +13,7 @@ namespace Common.Log.LogProviders.Loggers
     {
         private readonly dynamic _logger;
         private static Type s_callerStackBoundaryType;
-        private static readonly object CallerStackBoundaryTypeSync = new object();
+        private static readonly object _callerStackBoundaryTypeSync = new object();
 
         private readonly object _levelDebug;
         private readonly object _levelInfo;
@@ -23,7 +23,7 @@ namespace Common.Log.LogProviders.Loggers
         private readonly Func<object, object, bool> _isEnabledForDelegate;
         private readonly Action<object, object> _logDelegate;
         private readonly Func<object, Type, object, string, Exception, object> _createLoggingEvent;
-        private Action<object, string, object> _loggingEventPropertySetter;
+        private readonly Action<object, string, object> _loggingEventPropertySetter;
 
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ILogger")]
         public Log4NetLogger(dynamic logger)
@@ -192,7 +192,7 @@ namespace Common.Log.LogProviders.Loggers
             // determine correct caller - this might change due to jit optimizations with method inlining
             if (s_callerStackBoundaryType == null)
             {
-                lock (CallerStackBoundaryTypeSync)
+                lock (_callerStackBoundaryTypeSync)
                 {
                     StackTrace stack = new StackTrace();
                     Type thisType = GetType();

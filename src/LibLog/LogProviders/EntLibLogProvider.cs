@@ -13,26 +13,26 @@ namespace Common.Log.LogProviders
     {
         private const string TypeTemplate = "Microsoft.Practices.EnterpriseLibrary.Logging.{0}, Microsoft.Practices.EnterpriseLibrary.Logging";
         private static bool s_providerIsAvailableOverride = true;
-        private static readonly Type LogEntryType;
-        private static readonly Type LoggerType;
-        private static readonly Type TraceEventTypeType;
-        private static readonly Action<string, string, int> WriteLogEntry;
-        private static readonly Func<string, int, bool> ShouldLogEntry;
+        private static readonly Type _logEntryType;
+        private static readonly Type _loggerType;
+        private static readonly Type _traceEventTypeType;
+        private static readonly Action<string, string, int> _writeLogEntry;
+        private static readonly Func<string, int, bool> _shouldLogEntry;
 
         [SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
         static EntLibLogProvider()
         {
-            LogEntryType = Type.GetType(string.Format(CultureInfo.InvariantCulture, TypeTemplate, "LogEntry"));
-            LoggerType = Type.GetType(string.Format(CultureInfo.InvariantCulture, TypeTemplate, "Logger"));
-            TraceEventTypeType = TraceEventTypeValues.Type;
-            if (LogEntryType == null
-                || TraceEventTypeType == null
-                || LoggerType == null)
+            _logEntryType = Type.GetType(string.Format(CultureInfo.InvariantCulture, TypeTemplate, "LogEntry"));
+            _loggerType = Type.GetType(string.Format(CultureInfo.InvariantCulture, TypeTemplate, "Logger"));
+            _traceEventTypeType = TraceEventTypeValues.Type;
+            if (_logEntryType == null
+                || _traceEventTypeType == null
+                || _loggerType == null)
             {
                 return;
             }
-            WriteLogEntry = GetWriteLogEntry();
-            ShouldLogEntry = GetShouldLogEntry();
+            _writeLogEntry = GetWriteLogEntry();
+            _shouldLogEntry = GetShouldLogEntry();
         }
 
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "EnterpriseLibrary")]
@@ -52,14 +52,14 @@ namespace Common.Log.LogProviders
 
         public override Logger GetLogger(string name)
         {
-            return new EntLibLogger(name, WriteLogEntry, ShouldLogEntry).Log;
+            return new EntLibLogger(name, _writeLogEntry, _shouldLogEntry).Log;
         }
 
         public static bool IsLoggerAvailable()
         {
             return ProviderIsAvailableOverride
-                   && TraceEventTypeType != null
-                   && LogEntryType != null;
+                   && _traceEventTypeType != null
+                   && _logEntryType != null;
         }
 
         private static Action<string, string, int> GetWriteLogEntry()
@@ -71,11 +71,11 @@ namespace Common.Log.LogProviders
 
             MemberInitExpression memberInit = GetWriteLogExpression(
                 messageParameter,
-                Expression.Convert(severityParameter, TraceEventTypeType),
+                Expression.Convert(severityParameter, _traceEventTypeType),
                 logNameParameter);
 
             //Logger.Write(new LogEntry(....));
-            MethodInfo writeLogEntryMethod = LoggerType.GetMethodPortable("Write", LogEntryType);
+            MethodInfo writeLogEntryMethod = _loggerType.GetMethodPortable("Write", _logEntryType);
             var writeLogEntryExpression = Expression.Call(writeLogEntryMethod, memberInit);
 
             return Expression.Lambda<Action<string, string, int>>(
@@ -93,11 +93,11 @@ namespace Common.Log.LogProviders
 
             MemberInitExpression memberInit = GetWriteLogExpression(
                 Expression.Constant("***dummy***"),
-                Expression.Convert(severityParameter, TraceEventTypeType),
+                Expression.Convert(severityParameter, _traceEventTypeType),
                 logNameParameter);
 
             //Logger.Write(new LogEntry(....));
-            MethodInfo writeLogEntryMethod = LoggerType.GetMethodPortable("ShouldLog", LogEntryType);
+            MethodInfo writeLogEntryMethod = _loggerType.GetMethodPortable("ShouldLog", _logEntryType);
             var writeLogEntryExpression = Expression.Call(writeLogEntryMethod, memberInit);
 
             return Expression.Lambda<Func<string, int, bool>>(
@@ -109,7 +109,7 @@ namespace Common.Log.LogProviders
         private static MemberInitExpression GetWriteLogExpression(Expression message,
             Expression severityParameter, ParameterExpression logNameParameter)
         {
-            var entryType = LogEntryType;
+            var entryType = _logEntryType;
             MemberInitExpression memberInit = Expression.MemberInit(Expression.New(entryType),
                 Expression.Bind(entryType.GetPropertyPortable("Message"), message),
                 Expression.Bind(entryType.GetPropertyPortable("Severity"), severityParameter),

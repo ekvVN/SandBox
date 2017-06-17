@@ -11,7 +11,7 @@ namespace Common.Log.LogProviders
 
         private readonly Lazy<OpenNdc> _lazyOpenNdcMethod;
         private readonly Lazy<OpenMdc> _lazyOpenMdcMethod;
-        private static readonly IDisposable NoopDisposableInstance = new DisposableAction();
+        private static readonly IDisposable _noopDisposableInstance = new DisposableAction();
 
         protected LogProviderBase()
         {
@@ -35,12 +35,12 @@ namespace Common.Log.LogProviders
 
         protected virtual OpenNdc GetOpenNdcMethod()
         {
-            return _ => NoopDisposableInstance;
+            return _ => _noopDisposableInstance;
         }
 
         protected virtual OpenMdc GetOpenMdcMethod()
         {
-            return (_, __) => NoopDisposableInstance;
+            return (_, __) => _noopDisposableInstance;
         }
     }
 }

@@ -9,15 +9,15 @@ namespace Common.Log.LogProviders.Loggers
     public class SerilogLogger
     {
         private readonly object _logger;
-        private static readonly object DebugLevel;
-        private static readonly object ErrorLevel;
-        private static readonly object FatalLevel;
-        private static readonly object InformationLevel;
-        private static readonly object VerboseLevel;
-        private static readonly object WarningLevel;
-        private static readonly Func<object, object, bool> IsEnabled;
-        private static readonly Action<object, object, string, object[]> Write;
-        private static readonly Action<object, object, Exception, string, object[]> WriteException;
+        private static readonly object _debugLevel;
+        private static readonly object _errorLevel;
+        private static readonly object _fatalLevel;
+        private static readonly object _informationLevel;
+        private static readonly object _verboseLevel;
+        private static readonly object _warningLevel;
+        private static readonly Func<object, object, bool> _isEnabled;
+        private static readonly Action<object, object, string, object[]> _write;
+        private static readonly Action<object, object, Exception, string, object[]> _writeException;
 
         [SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations")]
         [SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
@@ -31,12 +31,12 @@ namespace Common.Log.LogProviders.Loggers
             {
                 throw new InvalidOperationException("Type Serilog.Events.LogEventLevel was not found.");
             }
-            DebugLevel = Enum.Parse(logEventLevelType, "Debug", false);
-            ErrorLevel = Enum.Parse(logEventLevelType, "Error", false);
-            FatalLevel = Enum.Parse(logEventLevelType, "Fatal", false);
-            InformationLevel = Enum.Parse(logEventLevelType, "Information", false);
-            VerboseLevel = Enum.Parse(logEventLevelType, "Verbose", false);
-            WarningLevel = Enum.Parse(logEventLevelType, "Warning", false);
+            _debugLevel = Enum.Parse(logEventLevelType, "Debug", false);
+            _errorLevel = Enum.Parse(logEventLevelType, "Error", false);
+            _fatalLevel = Enum.Parse(logEventLevelType, "Fatal", false);
+            _informationLevel = Enum.Parse(logEventLevelType, "Information", false);
+            _verboseLevel = Enum.Parse(logEventLevelType, "Verbose", false);
+            _warningLevel = Enum.Parse(logEventLevelType, "Warning", false);
 
             // Func<object, object, bool> isEnabled = (logger, level) => { return ((SeriLog.ILogger)logger).IsEnabled(level); }
             var loggerType = Type.GetType("Serilog.ILogger, Serilog");
@@ -50,7 +50,7 @@ namespace Common.Log.LogProviders.Loggers
             ParameterExpression levelParam = Expression.Parameter(typeof(object));
             UnaryExpression levelCast = Expression.Convert(levelParam, logEventLevelType);
             MethodCallExpression isEnabledMethodCall = Expression.Call(instanceCast, isEnabledMethodInfo, levelCast);
-            IsEnabled = Expression.Lambda<Func<object, object, bool>>(isEnabledMethodCall, instanceParam, levelParam).Compile();
+            _isEnabled = Expression.Lambda<Func<object, object, bool>>(isEnabledMethodCall, instanceParam, levelParam).Compile();
 
             // Action<object, object, string> Write =
             // (logger, level, message, params) => { ((SeriLog.ILoggerILogger)logger).Write(level, message, params); }
@@ -69,7 +69,7 @@ namespace Common.Log.LogProviders.Loggers
                 levelParam,
                 messageParam,
                 propertyValuesParam);
-            Write = expression.Compile();
+            _write = expression.Compile();
 
             // Action<object, object, string, Exception> WriteException =
             // (logger, level, exception, message) => { ((ILogger)logger).Write(level, exception, message, new object[]); }
@@ -86,7 +86,7 @@ namespace Common.Log.LogProviders.Loggers
                 exceptionParam,
                 messageParam,
                 propertyValuesParam);
-            WriteException = Expression.Lambda<Action<object, object, Exception, string, object[]>>(
+            _writeException = Expression.Lambda<Action<object, object, Exception, string, object[]>>(
                 writeMethodExp,
                 instanceParam,
                 levelParam,
@@ -105,10 +105,10 @@ namespace Common.Log.LogProviders.Loggers
             var translatedLevel = TranslateLevel(logLevel);
             if (messageFunc == null)
             {
-                return IsEnabled(_logger, translatedLevel);
+                return _isEnabled(_logger, translatedLevel);
             }
 
-            if (!IsEnabled(_logger, translatedLevel))
+            if (!_isEnabled(_logger, translatedLevel))
             {
                 return false;
             }
@@ -127,12 +127,12 @@ namespace Common.Log.LogProviders.Loggers
 
         private void LogMessage(object translatedLevel, Func<string> messageFunc, object[] formatParameters)
         {
-            Write(_logger, translatedLevel, messageFunc(), formatParameters);
+            _write(_logger, translatedLevel, messageFunc(), formatParameters);
         }
 
         private void LogException(object logLevel, Func<string> messageFunc, Exception exception, object[] formatParams)
         {
-            WriteException(_logger, logLevel, exception, messageFunc(), formatParams);
+            _writeException(_logger, logLevel, exception, messageFunc(), formatParams);
         }
 
         private static object TranslateLevel(LogLevel logLevel)
@@ -140,17 +140,17 @@ namespace Common.Log.LogProviders.Loggers
             switch (logLevel)
             {
                 case LogLevel.Fatal:
-                    return FatalLevel;
+                    return _fatalLevel;
                 case LogLevel.Error:
-                    return ErrorLevel;
+                    return _errorLevel;
                 case LogLevel.Warn:
-                    return WarningLevel;
+                    return _warningLevel;
                 case LogLevel.Info:
-                    return InformationLevel;
+                    return _informationLevel;
                 case LogLevel.Trace:
-                    return VerboseLevel;
+                    return _verboseLevel;
                 default:
-                    return DebugLevel;
+                    return _debugLevel;
             }
         }
     }

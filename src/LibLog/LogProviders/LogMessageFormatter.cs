@@ -11,7 +11,7 @@ namespace Common.Log.LogProviders
     public static class LogMessageFormatter
     {
         //private static readonly Regex Pattern = new Regex(@"\{@?\w{1,}\}");
-        private static readonly Regex Pattern = new Regex(@"(?<!{){@?(?<arg>[^ :{}]+)(?<format>:[^}]+)?}", RegexOptions.Compiled);
+        private static readonly Regex _pattern = new Regex(@"(?<!{){@?(?<arg>[^ :{}]+)(?<format>:[^}]+)?}", RegexOptions.Compiled);
 
         /// <summary>
         /// Some logging frameworks support structured logging, such as serilog. This will allow you to add names to structured data in a format string:
@@ -59,7 +59,7 @@ namespace Common.Log.LogProviders
             List<string> processedArguments = new List<string>();
             patternMatches = processedArguments;
 
-            foreach (Match match in Pattern.Matches(targetMessage))
+            foreach (Match match in _pattern.Matches(targetMessage))
             {
                 var arg = match.Groups["arg"].Value;
 

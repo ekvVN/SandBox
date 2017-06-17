@@ -14,8 +14,6 @@ namespace Common.Log
     [ExcludeFromCodeCoverage]
     public static class LogProvider
     {
-        private const string NullLogProvider = "Current Log Provider is not set. Call SetCurrentLogProvider " +
-                                               "with a non-null value first.";
         private static dynamic s_currentLogProvider;
         private static Action<ILogProvider> s_onCurrentLogProviderSet;
 

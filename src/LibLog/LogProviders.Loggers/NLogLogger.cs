@@ -12,7 +12,7 @@ namespace Common.Log.LogProviders.Loggers
     {
         private readonly dynamic _logger;
 
-        private static Func<string, object, string, Exception, object> _logEventInfoFact;
+        private static readonly Func<string, object, string, Exception, object> _logEventInfoFact;
 
         private static readonly object _levelTrace;
         private static readonly object _levelDebug;
@@ -58,7 +58,10 @@ namespace Common.Log.LogProviders.Loggers
                 _logEventInfoFact = Expression.Lambda<Func<string, object, string, Exception, object>>(createLogEventInfoMethodCall,
                     loggerNameParam, levelParam, messageParam, exceptionParam).Compile();
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
         }
 
         public NLogLogger(dynamic logger)
@@ -79,15 +82,14 @@ namespace Common.Log.LogProviders.Loggers
             {
                 if (IsLogLevelEnable(logLevel))
                 {
-                    var nlogLevel = this.TranslateLevel(logLevel);
-                    Type s_callerStackBoundaryType;
+                    var nlogLevel = TranslateLevel(logLevel);
 
                     StackTrace stack = new StackTrace();
                     Type thisType = GetType();
                     Type knownType0 = typeof(LoggerExecutionWrapper);
                     Type knownType1 = typeof(LogExtensions);
                     //Maybe inline, so we may can't found any LibLog classes in stack
-                    s_callerStackBoundaryType = null;
+                    Type callerStackBoundaryType = null;
                     for (var i = 0; i < stack.FrameCount; i++)
                     {
                         var declaringType = stack.GetFrame(i).GetMethod().DeclaringType;
@@ -96,13 +98,13 @@ namespace Common.Log.LogProviders.Loggers
                             !IsInTypeHierarchy(knownType1, declaringType))
                         {
                             if (i > 1)
-                                s_callerStackBoundaryType = stack.GetFrame(i - 1).GetMethod().DeclaringType;
+                                callerStackBoundaryType = stack.GetFrame(i - 1).GetMethod().DeclaringType;
                             break;
                         }
                     }
 
-                    if (s_callerStackBoundaryType != null)
-                        _logger.Log(s_callerStackBoundaryType, _logEventInfoFact(_logger.Name, nlogLevel, messageFunc(), exception));
+                    if (callerStackBoundaryType != null)
+                        _logger.Log(callerStackBoundaryType, _logEventInfoFact(_logger.Name, nlogLevel, messageFunc(), exception));
                     else
                         _logger.Log(_logEventInfoFact(_logger.Name, nlogLevel, messageFunc(), exception));
                     return true;
