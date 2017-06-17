@@ -6,6 +6,7 @@ namespace Common.Log
     using System.Diagnostics.CodeAnalysis;
     using System.Runtime.CompilerServices;
     using Common.Log.LogProviders;
+    using Common.Log.LogProviders.Loggers;
 
     /// <summary>
     /// Provides a mechanism to create instances of <see cref="ILog" /> objects.
@@ -187,17 +188,6 @@ namespace Common.Log
                     ex);
             }
             return null;
-        }
-
-        [ExcludeFromCodeCoverage]
-        internal class NoOpLogger : ILog
-        {
-            internal static readonly NoOpLogger Instance = new NoOpLogger();
-
-            public bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception, params object[] formatParameters)
-            {
-                return false;
-            }
         }
     }
 }

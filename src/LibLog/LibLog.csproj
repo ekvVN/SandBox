@@ -46,6 +46,12 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ILog.cs" />
     <Compile Include="ILogProvider.cs" />
+    <Compile Include="LogProviders.Loggers\EntLibLogger.cs" />
+    <Compile Include="LogProviders.Loggers\Log4NetLogger.cs" />
+    <Compile Include="LogProviders.Loggers\LoupeLogger.cs" />
+    <Compile Include="LogProviders.Loggers\NLogLogger.cs" />
+    <Compile Include="LogProviders.Loggers\NoOpLogger.cs" />
+    <Compile Include="LogProviders.Loggers\SerilogLogger.cs" />
     <Compile Include="LogProviders\EntLibLogProvider.cs" />
     <Compile Include="LogExtensions.cs" />
     <Compile Include="LoggerExecutionWrapper.cs" />
