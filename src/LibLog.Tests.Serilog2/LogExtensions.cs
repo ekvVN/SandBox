@@ -1,8 +1,8 @@
 namespace LibLog.Logging.LogProviders
 {
     using System;
+    using Common.Log;
     using Shouldly;
-    using YourRootNamespace.Logging;
 
     internal static class LogExtensions
     {

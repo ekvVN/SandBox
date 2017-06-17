@@ -2,10 +2,9 @@
 {
     using System;
     using System.Globalization;
+    using Common.Log.LogProviders;
     using Shouldly;
     using Xunit;
-    using YourRootNamespace.Logging;
-    using YourRootNamespace.Logging.LogProviders;
 
     public class LogMessageFormatterTests
     {

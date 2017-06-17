@@ -4,14 +4,14 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.Remoting.Messaging;
+    using Common.Log;
+    using Common.Log.LogProviders;
     using Serilog;
     using Serilog.Context;
     using Serilog.Events;
     using Shouldly;
     using Xunit;
-    using YourRootNamespace.Logging;
-    using YourRootNamespace.Logging.LogProviders;
-    using LogLevel = YourRootNamespace.Logging.LogLevel;
+    using LogLevel = Common.Log.LogLevel;
 
     public class SerilogLogProviderLoggingTests : IDisposable
     {

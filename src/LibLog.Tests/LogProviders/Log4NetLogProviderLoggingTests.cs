@@ -2,15 +2,15 @@
 {
     using System;
     using System.Linq;
+    using Common.Log;
+    using Common.Log.LogProviders;
     using log4net;
     using log4net.Appender;
     using log4net.Config;
     using log4net.Core;
     using Shouldly;
     using Xunit;
-    using YourRootNamespace.Logging;
-    using YourRootNamespace.Logging.LogProviders;
-    using ILog = YourRootNamespace.Logging.ILog;
+    using ILog = Common.Log.ILog;
 
     public class Log4NetLogProviderLoggingTests : IDisposable
     {

@@ -2,12 +2,12 @@
 {
     using System;
     using System.Runtime.CompilerServices;
+    using Common.Log;
+    using Common.Log.LogProviders;
     using Gibraltar.Agent;
     using Xunit;
     using Xunit.Extensions;
-    using YourRootNamespace.Logging;
-    using YourRootNamespace.Logging.LogProviders;
-    using ILog = YourRootNamespace.Logging.ILog;
+    using ILog = Common.Log.ILog;
 
     public class LoupeProviderLoggingTests : IDisposable
     {

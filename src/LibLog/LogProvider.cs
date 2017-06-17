@@ -1,11 +1,11 @@
-namespace YourRootNamespace.Logging
+namespace Common.Log
 {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.Runtime.CompilerServices;
-    using YourRootNamespace.Logging.LogProviders;
+    using Common.Log.LogProviders;
 
     /// <summary>
     /// Provides a mechanism to create instances of <see cref="ILog" /> objects.

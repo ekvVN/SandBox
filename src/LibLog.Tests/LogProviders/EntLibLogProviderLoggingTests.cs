@@ -4,15 +4,15 @@
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
+    using Common.Log;
+    using Common.Log.LogProviders;
     using Microsoft.Practices.EnterpriseLibrary.Common.Configuration;
     using Microsoft.Practices.EnterpriseLibrary.Logging;
     using Microsoft.Practices.EnterpriseLibrary.Logging.Filters;
     using Microsoft.Practices.ServiceLocation;
     using Shouldly;
     using Xunit;
-    using YourRootNamespace.Logging;
-    using YourRootNamespace.Logging.LogProviders;
-    using LogLevel = YourRootNamespace.Logging.LogLevel;
+    using LogLevel = Common.Log.LogLevel;
 
     public class EntLibLogProviderLoggingTests : IDisposable
     {

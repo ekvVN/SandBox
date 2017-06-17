@@ -1,9 +1,9 @@
 ﻿namespace LibLog.Logging
 {
     using System;
+    using Common.Log;
     using Shouldly;
     using Xunit;
-    using YourRootNamespace.Logging;
 
     public class LoggerExecutionWrapperTests
     {

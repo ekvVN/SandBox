@@ -1,8 +1,8 @@
 ﻿namespace LibLog
 {
     using System;
+    using Common.Log;
     using Xunit;
-    using YourRootNamespace.Logging;
 
     public class LibLogTests
     {

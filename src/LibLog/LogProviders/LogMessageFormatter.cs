@@ -1,4 +1,4 @@
-namespace YourRootNamespace.Logging.LogProviders
+namespace Common.Log.LogProviders
 {
     using System;
     using System.Collections.Generic;

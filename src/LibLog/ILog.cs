@@ -1,4 +1,4 @@
-namespace YourRootNamespace.Logging
+namespace Common.Log
 {
     using System;
 
