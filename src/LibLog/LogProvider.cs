@@ -50,7 +50,7 @@ namespace Common.Log
         /// LibLog (or other logging abstraction) so you adapt and delegate to them.
         /// <see cref="SetCurrentLogProvider"/> 
         /// </summary>
-        internal static Action<ILogProvider> OnCurrentLogProviderSet
+        public static Action<ILogProvider> OnCurrentLogProviderSet
         {
             set
             {
@@ -59,7 +59,7 @@ namespace Common.Log
             }
         }
 
-        internal static ILogProvider CurrentLogProvider
+        public static ILogProvider CurrentLogProvider
         {
             get
             {
@@ -144,11 +144,11 @@ namespace Common.Log
                 : logProvider.OpenMappedContext(key, value);
         }
 
-        internal delegate bool IsLoggerAvailable();
+        public delegate bool IsLoggerAvailable();
 
-        internal delegate ILogProvider CreateLogProvider();
+        public delegate ILogProvider CreateLogProvider();
 
-        internal static readonly List<Tuple<IsLoggerAvailable, CreateLogProvider>> LogProviderResolvers =
+        public static readonly List<Tuple<IsLoggerAvailable, CreateLogProvider>> LogProviderResolvers =
                 new List<Tuple<IsLoggerAvailable, CreateLogProvider>>
                 {
                     new Tuple<IsLoggerAvailable, CreateLogProvider>(SerilogLogProvider.IsLoggerAvailable, () => new SerilogLogProvider()),
@@ -168,7 +168,7 @@ namespace Common.Log
 
         [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "System.Console.WriteLine(System.String,System.Object,System.Object)")]
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        internal static ILogProvider ResolveLogProvider()
+        public static ILogProvider ResolveLogProvider()
         {
             try
             {

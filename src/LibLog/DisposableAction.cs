@@ -4,7 +4,7 @@ namespace Common.Log
     using System.Diagnostics.CodeAnalysis;
 
     [ExcludeFromCodeCoverage]
-    internal class DisposableAction : IDisposable
+    public class DisposableAction : IDisposable
     {
         private readonly Action _onDispose;
 

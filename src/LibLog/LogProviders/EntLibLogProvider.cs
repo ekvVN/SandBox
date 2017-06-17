@@ -9,7 +9,7 @@ namespace Common.Log.LogProviders
     using Common.Log.LogProviders.Loggers;
 
     [ExcludeFromCodeCoverage]
-    internal class EntLibLogProvider : LogProviderBase
+    public class EntLibLogProvider : LogProviderBase
     {
         private const string TypeTemplate = "Microsoft.Practices.EnterpriseLibrary.Logging.{0}, Microsoft.Practices.EnterpriseLibrary.Logging";
         private static bool s_providerIsAvailableOverride = true;
@@ -55,7 +55,7 @@ namespace Common.Log.LogProviders
             return new EntLibLogger(name, WriteLogEntry, ShouldLogEntry).Log;
         }
 
-        internal static bool IsLoggerAvailable()
+        public static bool IsLoggerAvailable()
         {
             return ProviderIsAvailableOverride
                    && TraceEventTypeType != null

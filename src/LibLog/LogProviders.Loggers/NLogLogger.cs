@@ -8,7 +8,7 @@ namespace Common.Log.LogProviders.Loggers
     using System.Reflection;
 
     [ExcludeFromCodeCoverage]
-    internal class NLogLogger
+    public class NLogLogger
     {
         private readonly dynamic _logger;
 
@@ -61,7 +61,7 @@ namespace Common.Log.LogProviders.Loggers
             catch { }
         }
 
-        internal NLogLogger(dynamic logger)
+        public NLogLogger(dynamic logger)
         {
             _logger = logger;
         }

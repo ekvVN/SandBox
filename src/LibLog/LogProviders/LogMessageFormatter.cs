@@ -8,7 +8,7 @@ namespace Common.Log.LogProviders
     using System.Text.RegularExpressions;
 
     [ExcludeFromCodeCoverage]
-    internal static class LogMessageFormatter
+    public static class LogMessageFormatter
     {
         //private static readonly Regex Pattern = new Regex(@"\{@?\w{1,}\}");
         private static readonly Regex Pattern = new Regex(@"(?<!{){@?(?<arg>[^ :{}]+)(?<format>:[^}]+)?}", RegexOptions.Compiled);

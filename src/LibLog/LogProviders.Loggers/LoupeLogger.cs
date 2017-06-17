@@ -6,7 +6,7 @@ namespace Common.Log.LogProviders.Loggers
     /// <summary>
     /// The form of the Loupe Log.Write method we're using
     /// </summary>
-    internal delegate void WriteDelegate(
+    public delegate void WriteDelegate(
         int severity,
         string logSystem,
         int skipFrames,
@@ -21,7 +21,7 @@ namespace Common.Log.LogProviders.Loggers
         );
 
     [ExcludeFromCodeCoverage]
-    internal class LoupeLogger
+    public class LoupeLogger
     {
         private const string LogSystem = "LibLog";
 
@@ -29,7 +29,7 @@ namespace Common.Log.LogProviders.Loggers
         private readonly WriteDelegate _logWriteDelegate;
         private readonly int _skipLevel;
 
-        internal LoupeLogger(string category, WriteDelegate logWriteDelegate)
+        public LoupeLogger(string category, WriteDelegate logWriteDelegate)
         {
             _category = category;
             _logWriteDelegate = logWriteDelegate;

@@ -4,7 +4,7 @@ namespace Common.Log.LogProviders
     using System.Diagnostics.CodeAnalysis;
 
     [ExcludeFromCodeCoverage]
-    internal abstract class LogProviderBase : ILogProvider
+    public abstract class LogProviderBase : ILogProvider
     {
         protected delegate IDisposable OpenNdc(string message);
         protected delegate IDisposable OpenMdc(string key, string value);

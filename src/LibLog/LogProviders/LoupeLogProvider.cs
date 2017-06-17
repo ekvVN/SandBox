@@ -6,7 +6,7 @@ namespace Common.Log.LogProviders
     using Common.Log.LogProviders.Loggers;
 
     [ExcludeFromCodeCoverage]
-    internal class LoupeLogProvider : LogProviderBase
+    public class LoupeLogProvider : LogProviderBase
     {
         private static bool s_providerIsAvailableOverride = true;
         private readonly WriteDelegate _logWriteDelegate;

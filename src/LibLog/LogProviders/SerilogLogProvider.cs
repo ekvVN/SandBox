@@ -7,7 +7,7 @@ namespace Common.Log.LogProviders
     using Common.Log.LogProviders.Loggers;
 
     [ExcludeFromCodeCoverage]
-    internal class SerilogLogProvider : LogProviderBase
+    public class SerilogLogProvider : LogProviderBase
     {
         private readonly Func<string, object> _getLoggerByNameDelegate;
         private static bool s_providerIsAvailableOverride = true;
@@ -33,7 +33,7 @@ namespace Common.Log.LogProviders
             return new SerilogLogger(_getLoggerByNameDelegate(name)).Log;
         }
 
-        internal static bool IsLoggerAvailable()
+        public static bool IsLoggerAvailable()
         {
             return ProviderIsAvailableOverride && GetLogManagerType() != null;
         }

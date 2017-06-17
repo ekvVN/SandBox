@@ -4,13 +4,13 @@ namespace Common.Log.LogProviders.Loggers
     using System.Diagnostics.CodeAnalysis;
 
     [ExcludeFromCodeCoverage]
-    internal class EntLibLogger
+    public class EntLibLogger
     {
         private readonly string _loggerName;
         private readonly Action<string, string, int> _writeLog;
         private readonly Func<string, int, bool> _shouldLog;
 
-        internal EntLibLogger(string loggerName, Action<string, string, int> writeLog, Func<string, int, bool> shouldLog)
+        public EntLibLogger(string loggerName, Action<string, string, int> writeLog, Func<string, int, bool> shouldLog)
         {
             _loggerName = loggerName;
             _writeLog = writeLog;

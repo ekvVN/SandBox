@@ -6,7 +6,7 @@ namespace Common.Log.LogProviders.Loggers
     using System.Reflection;
 
     [ExcludeFromCodeCoverage]
-    internal class SerilogLogger
+    public class SerilogLogger
     {
         private readonly object _logger;
         private static readonly object DebugLevel;
@@ -95,7 +95,7 @@ namespace Common.Log.LogProviders.Loggers
                 propertyValuesParam).Compile();
         }
 
-        internal SerilogLogger(object logger)
+        public SerilogLogger(object logger)
         {
             _logger = logger;
         }

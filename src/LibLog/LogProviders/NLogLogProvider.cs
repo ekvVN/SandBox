@@ -7,7 +7,7 @@ namespace Common.Log.LogProviders
     using Common.Log.LogProviders.Loggers;
 
     [ExcludeFromCodeCoverage]
-    internal class NLogLogProvider : LogProviderBase
+    public class NLogLogProvider : LogProviderBase
     {
         private readonly Func<string, object> _getLoggerByNameDelegate;
         private static bool s_providerIsAvailableOverride = true;

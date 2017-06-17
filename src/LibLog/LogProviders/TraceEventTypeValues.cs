@@ -4,14 +4,14 @@ namespace Common.Log.LogProviders
     using System.Diagnostics.CodeAnalysis;
 
     [ExcludeFromCodeCoverage]
-    internal static class TraceEventTypeValues
+    public static class TraceEventTypeValues
     {
-        internal static readonly Type Type;
-        internal static readonly int Verbose;
-        internal static readonly int Information;
-        internal static readonly int Warning;
-        internal static readonly int Error;
-        internal static readonly int Critical;
+        public static readonly Type Type;
+        public static readonly int Verbose;
+        public static readonly int Information;
+        public static readonly int Warning;
+        public static readonly int Error;
+        public static readonly int Critical;
 
         [SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
         static TraceEventTypeValues()

@@ -4,19 +4,19 @@ namespace Common.Log
     using System.Diagnostics.CodeAnalysis;
 
     [ExcludeFromCodeCoverage]
-    internal class LoggerExecutionWrapper : ILog
+    public class LoggerExecutionWrapper : ILog
     {
         private readonly Logger _logger;
         private readonly Func<bool> _getIsDisabled;
-        internal const string FailedToGenerateLogMessage = "Failed to generate log message";
+        public const string FailedToGenerateLogMessage = "Failed to generate log message";
 
-        internal LoggerExecutionWrapper(Logger logger, Func<bool> getIsDisabled = null)
+        public LoggerExecutionWrapper(Logger logger, Func<bool> getIsDisabled = null)
         {
             _logger = logger;
             _getIsDisabled = getIsDisabled ?? (() => false);
         }
 
-        internal Logger WrappedLogger
+        public Logger WrappedLogger
         {
             get { return _logger; }
         }

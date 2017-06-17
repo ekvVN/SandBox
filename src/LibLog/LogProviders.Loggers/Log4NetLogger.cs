@@ -9,7 +9,7 @@ namespace Common.Log.LogProviders.Loggers
     using System.Reflection;
 
     [ExcludeFromCodeCoverage]
-    internal class Log4NetLogger
+    public class Log4NetLogger
     {
         private readonly dynamic _logger;
         private static Type s_callerStackBoundaryType;
@@ -26,7 +26,7 @@ namespace Common.Log.LogProviders.Loggers
         private Action<object, string, object> _loggingEventPropertySetter;
 
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "ILogger")]
-        internal Log4NetLogger(dynamic logger)
+        public Log4NetLogger(dynamic logger)
         {
             _logger = logger.Logger;
 
