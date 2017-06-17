@@ -143,7 +143,8 @@
         private string GetSingleMessage()
         {
             LoggingEvent loggingEvent = _memoryAppender.GetEvents().Single();
-            return $"{loggingEvent.Level}|{loggingEvent.MessageObject}|{loggingEvent.ExceptionObject?.Message ?? string.Empty}";
+            return string.Format("{0}|{1}|{2}", loggingEvent.Level, loggingEvent.MessageObject,
+                loggingEvent.ExceptionObject != null ? loggingEvent.ExceptionObject.Message : string.Empty);
         }
     }
 }

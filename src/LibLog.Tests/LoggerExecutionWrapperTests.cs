@@ -49,18 +49,27 @@
         {
             private LogLevel _logLevel;
 
-            public LogLevel LogLevel => _logLevel;
+            public LogLevel LogLevel
+            {
+                get { return _logLevel; }
+            }
 
-            public string Message => _message;
+            public string Message
+            {
+                get { return _message; }
+            }
 
-            public Exception Exception => _exception;
+            public Exception Exception
+            {
+                get { return _exception; }
+            }
 
             private string _message;
             private Exception _exception;
 
             public bool Log(LogLevel logLevel, Func<string> messageFunc, Exception exception, params object[] formatParameters)
             {
-                string message = messageFunc?.Invoke();
+                string message = messageFunc != null ? messageFunc() : null;
                 if (message != null)
                 {
                     _logLevel = logLevel;

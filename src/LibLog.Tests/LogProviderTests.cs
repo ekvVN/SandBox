@@ -3,6 +3,7 @@
     using System;
     using Common.Log;
     using Common.Log.LogProviders;
+    using Common.Log.LogProviders.Loggers;
     using NLog;
     using NLog.Config;
     using NLog.Targets;
@@ -93,7 +94,7 @@
 
             ILog logger = LogProvider.For<LogProviderTests>();
 
-            logger.ShouldBeOfType<LogProvider.NoOpLogger>();
+            logger.ShouldBeOfType<NoOpLogger>();
         }
 
         [Fact]
