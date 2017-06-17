@@ -44,14 +44,14 @@ namespace Common.Log.LogProviders.Loggers
                 {
                     throw new InvalidOperationException("Type NLog.LogEventInfo was not found.");
                 }
-                MethodInfo createLogEventInfoMethodInfo = logEventInfoType.GetMethodPortable("Create",
+                var createLogEventInfoMethodInfo = logEventInfoType.GetMethodPortable("Create",
                     logEventLevelType, typeof(string), typeof(Exception), typeof(IFormatProvider), typeof(string), typeof(object[]));
-                ParameterExpression loggerNameParam = Expression.Parameter(typeof(string));
-                ParameterExpression levelParam = Expression.Parameter(typeof(object));
-                ParameterExpression messageParam = Expression.Parameter(typeof(string));
-                ParameterExpression exceptionParam = Expression.Parameter(typeof(Exception));
-                UnaryExpression levelCast = Expression.Convert(levelParam, logEventLevelType);
-                MethodCallExpression createLogEventInfoMethodCall = Expression.Call(null,
+                var loggerNameParam = Expression.Parameter(typeof(string));
+                var levelParam = Expression.Parameter(typeof(object));
+                var messageParam = Expression.Parameter(typeof(string));
+                var exceptionParam = Expression.Parameter(typeof(Exception));
+                var levelCast = Expression.Convert(levelParam, logEventLevelType);
+                var createLogEventInfoMethodCall = Expression.Call(null,
                     createLogEventInfoMethodInfo,
                     levelCast, loggerNameParam, exceptionParam,
                     Expression.Constant(null, typeof(IFormatProvider)), messageParam, Expression.Constant(null, typeof(object[])));
@@ -84,10 +84,10 @@ namespace Common.Log.LogProviders.Loggers
                 {
                     var nlogLevel = TranslateLevel(logLevel);
 
-                    StackTrace stack = new StackTrace();
-                    Type thisType = GetType();
-                    Type knownType0 = typeof(LoggerExecutionWrapper);
-                    Type knownType1 = typeof(LogExtensions);
+                    var stack = new StackTrace();
+                    var thisType = GetType();
+                    var knownType0 = typeof(LoggerExecutionWrapper);
+                    var knownType1 = typeof(LogExtensions);
                     //Maybe inline, so we may can't found any LibLog classes in stack
                     Type callerStackBoundaryType = null;
                     for (var i = 0; i < stack.FrameCount; i++)

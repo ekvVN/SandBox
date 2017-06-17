@@ -41,29 +41,31 @@ namespace Common.Log.LogProviders
 
         protected override OpenNdc GetOpenNdcMethod()
         {
-            Type ndcContextType = Type.GetType("NLog.NestedDiagnosticsContext, NLog");
-            MethodInfo pushMethod = ndcContextType.GetMethodPortable("Push", typeof(string));
-            ParameterExpression messageParam = Expression.Parameter(typeof(string), "message");
-            MethodCallExpression pushMethodCall = Expression.Call(null, pushMethod, messageParam);
-            return Expression.Lambda<OpenNdc>(pushMethodCall, messageParam).Compile();
+            var ndcContextType = Type.GetType("NLog.NestedDiagnosticsContext, NLog");
+            var pushMethod = ndcContextType.GetMethodPortable("Push", typeof(string));
+            var messageParam = Expression.Parameter(typeof(string), "message");
+            var pushMethodCall = Expression.Call(null, pushMethod, messageParam);
+            return Expression
+                .Lambda<OpenNdc>(pushMethodCall, messageParam)
+                .Compile();
         }
 
         protected override OpenMdc GetOpenMdcMethod()
         {
-            Type mdcContextType = Type.GetType("NLog.MappedDiagnosticsContext, NLog");
+            var mdcContextType = Type.GetType("NLog.MappedDiagnosticsContext, NLog");
 
-            MethodInfo setMethod = mdcContextType.GetMethodPortable("Set", typeof(string), typeof(string));
-            MethodInfo removeMethod = mdcContextType.GetMethodPortable("Remove", typeof(string));
-            ParameterExpression keyParam = Expression.Parameter(typeof(string), "key");
-            ParameterExpression valueParam = Expression.Parameter(typeof(string), "value");
+            var setMethod = mdcContextType.GetMethodPortable("Set", typeof(string), typeof(string));
+            var removeMethod = mdcContextType.GetMethodPortable("Remove", typeof(string));
+            var keyParam = Expression.Parameter(typeof(string), "key");
+            var valueParam = Expression.Parameter(typeof(string), "value");
 
-            MethodCallExpression setMethodCall = Expression.Call(null, setMethod, keyParam, valueParam);
-            MethodCallExpression removeMethodCall = Expression.Call(null, removeMethod, keyParam);
+            var setMethodCall = Expression.Call(null, setMethod, keyParam, valueParam);
+            var removeMethodCall = Expression.Call(null, removeMethod, keyParam);
 
-            Action<string, string> set = Expression
+            var set = Expression
                 .Lambda<Action<string, string>>(setMethodCall, keyParam, valueParam)
                 .Compile();
-            Action<string> remove = Expression
+            var remove = Expression
                 .Lambda<Action<string>>(removeMethodCall, keyParam)
                 .Compile();
 
@@ -81,11 +83,13 @@ namespace Common.Log.LogProviders
 
         private static Func<string, object> GetGetLoggerMethodCall()
         {
-            Type logManagerType = GetLogManagerType();
-            MethodInfo method = logManagerType.GetMethodPortable("GetLogger", typeof(string));
-            ParameterExpression nameParam = Expression.Parameter(typeof(string), "name");
-            MethodCallExpression methodCall = Expression.Call(null, method, nameParam);
-            return Expression.Lambda<Func<string, object>>(methodCall, nameParam).Compile();
+            var logManagerType = GetLogManagerType();
+            var method = logManagerType.GetMethodPortable("GetLogger", typeof(string));
+            var nameParam = Expression.Parameter(typeof(string), "name");
+            var methodCall = Expression.Call(null, method, nameParam);
+            return Expression
+                .Lambda<Func<string, object>>(methodCall, nameParam)
+                .Compile();
         }
     }
 }

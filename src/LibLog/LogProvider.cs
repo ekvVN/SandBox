@@ -59,10 +59,7 @@ namespace Common.Log
 
         public static ILogProvider CurrentLogProvider
         {
-            get
-            {
-                return s_currentLogProvider;
-            }
+            get { return s_currentLogProvider; }
         }
 
         /// <summary>
@@ -105,10 +102,10 @@ namespace Common.Log
         /// <returns>An instance of <see cref="ILog"/></returns>
         public static ILog GetLogger(string name)
         {
-            ILogProvider logProvider = CurrentLogProvider ?? ResolveLogProvider();
+            var logProvider = CurrentLogProvider ?? ResolveLogProvider();
             return logProvider == null
                 ? NoOpLogger.Instance
-                : (ILog)new LoggerExecutionWrapper(logProvider.GetLogger(name), () => IsDisabled);
+                : (ILog) new LoggerExecutionWrapper(logProvider.GetLogger(name), () => IsDisabled);
         }
 
         /// <summary>
@@ -119,7 +116,7 @@ namespace Common.Log
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "SetCurrentLogProvider")]
         public static IDisposable OpenNestedContext(string message)
         {
-            ILogProvider logProvider = CurrentLogProvider ?? ResolveLogProvider();
+            var logProvider = CurrentLogProvider ?? ResolveLogProvider();
 
             return logProvider == null
                 ? new DisposableAction(() => { })
@@ -135,7 +132,7 @@ namespace Common.Log
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "SetCurrentLogProvider")]
         public static IDisposable OpenMappedContext(string key, string value)
         {
-            ILogProvider logProvider = CurrentLogProvider ?? ResolveLogProvider();
+            var logProvider = CurrentLogProvider ?? ResolveLogProvider();
 
             return logProvider == null
                 ? new DisposableAction(() => { })
@@ -147,14 +144,14 @@ namespace Common.Log
         public delegate ILogProvider CreateLogProvider();
 
         public static readonly List<Tuple<IsLoggerAvailable, CreateLogProvider>> LogProviderResolvers =
-                new List<Tuple<IsLoggerAvailable, CreateLogProvider>>
-                {
-                    new Tuple<IsLoggerAvailable, CreateLogProvider>(SerilogLogProvider.IsLoggerAvailable, () => new SerilogLogProvider()),
-                    new Tuple<IsLoggerAvailable, CreateLogProvider>(NLogLogProvider.IsLoggerAvailable, () => new NLogLogProvider()),
-                    new Tuple<IsLoggerAvailable, CreateLogProvider>(Log4NetLogProvider.IsLoggerAvailable, () => new Log4NetLogProvider()),
-                    new Tuple<IsLoggerAvailable, CreateLogProvider>(EntLibLogProvider.IsLoggerAvailable, () => new EntLibLogProvider()),
-                    new Tuple<IsLoggerAvailable, CreateLogProvider>(LoupeLogProvider.IsLoggerAvailable, () => new LoupeLogProvider()),
-                };
+            new List<Tuple<IsLoggerAvailable, CreateLogProvider>>
+            {
+                new Tuple<IsLoggerAvailable, CreateLogProvider>(SerilogLogProvider.IsLoggerAvailable, () => new SerilogLogProvider()),
+                new Tuple<IsLoggerAvailable, CreateLogProvider>(NLogLogProvider.IsLoggerAvailable, () => new NLogLogProvider()),
+                new Tuple<IsLoggerAvailable, CreateLogProvider>(Log4NetLogProvider.IsLoggerAvailable, () => new Log4NetLogProvider()),
+                new Tuple<IsLoggerAvailable, CreateLogProvider>(EntLibLogProvider.IsLoggerAvailable, () => new EntLibLogProvider()),
+                new Tuple<IsLoggerAvailable, CreateLogProvider>(LoupeLogProvider.IsLoggerAvailable, () => new LoupeLogProvider()),
+            };
 
         private static void RaiseOnCurrentLogProviderSet()
         {

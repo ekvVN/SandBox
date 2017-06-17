@@ -23,11 +23,11 @@ namespace Common.Log.LogProviders
             }
             Type = assembly.GetType("System.Diagnostics.TraceEventType");
             if (Type == null) return;
-            Verbose = (int)Enum.Parse(Type, "Verbose", false);
-            Information = (int)Enum.Parse(Type, "Information", false);
-            Warning = (int)Enum.Parse(Type, "Warning", false);
-            Error = (int)Enum.Parse(Type, "Error", false);
-            Critical = (int)Enum.Parse(Type, "Critical", false);
+            Verbose = (int) Enum.Parse(Type, "Verbose", false);
+            Information = (int) Enum.Parse(Type, "Information", false);
+            Warning = (int) Enum.Parse(Type, "Warning", false);
+            Error = (int) Enum.Parse(Type, "Error", false);
+            Critical = (int) Enum.Parse(Type, "Critical", false);
         }
     }
 }
